@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/gym-data.dart';
+import 'package:we_go_jim/manage-data/structures.dart';
 
 class GymDataWidget extends StatefulWidget {
-  const GymDataWidget({super.key});
+  final Function(List<GymData>) onUpdate;
+  List<GymData> gymsData = [];
+  GymDataWidget({Key? key, required this.gymsData, required this.onUpdate}) : super(key: key);
 
   @override
   _GymDataWidgetState createState() => _GymDataWidgetState();
 }
 
 class _GymDataWidgetState extends State<GymDataWidget> {
-  List<String> tabTitles = ['GYM 1', 'GYM 2', 'GYM 3'];
-
   void _addNewTab() {
     showDialog<String>(
       context: context,
@@ -31,7 +32,9 @@ class _GymDataWidgetState extends State<GymDataWidget> {
     ).then((value) {
       if (value != null && value.isNotEmpty) {
         setState(() {
-          tabTitles.add(value);
+          GymData gymsDataToAdd = GymData(name: value, exercises: []);
+          widget.gymsData.add(gymsDataToAdd);
+          widget.onUpdate(widget.gymsData);
         });
       }
     });
@@ -42,10 +45,11 @@ class _GymDataWidgetState extends State<GymDataWidget> {
       context: context,
       builder: (BuildContext context) {
         return DeleteTabDialog(
-          tabTitles: tabTitles,
+          tabTitles: widget.gymsData.map((gymsData) => gymsData.name!).toList(),
           onDelete: (String value) {
             setState(() {
-              tabTitles.remove(value);
+              widget.gymsData.removeWhere((gymsData) => gymsData.name == value);
+              widget.onUpdate(widget.gymsData);
             });
           },
         );
@@ -53,10 +57,17 @@ class _GymDataWidgetState extends State<GymDataWidget> {
     );
   }
 
+  updateGymData(GymData gymData) {
+    setState(() {
+      widget.gymsData[widget.gymsData.indexWhere((element) => element.name == gymData.name)] = gymData;
+      widget.onUpdate(widget.gymsData);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: tabTitles.length,
+      length: widget.gymsData.length,
       child: Column(
         children: [
           // TabBar which allows selecting between different tabTitles
@@ -73,9 +84,9 @@ class _GymDataWidgetState extends State<GymDataWidget> {
               Expanded(
                 child: TabBar(
                   isScrollable: true,
-                  tabs: tabTitles.map((title) => Tab(
-                    text: title,
-                  )).toList(),
+                  tabs: widget.gymsData
+                      .map((gymsData) => Tab(text: gymsData.name))
+                      .toList(),
                 ),
               ),
               IconButton(
@@ -88,8 +99,14 @@ class _GymDataWidgetState extends State<GymDataWidget> {
           ),
           Expanded(
             child: TabBarView(
-              children: tabTitles
-                  .map((title) => ExerciseContentWidget(tabTitle: title))
+              children: widget.gymsData
+                  .map((gymData) => ExerciseContentWidget(
+                        gymData: gymData,
+                        onUpdate: (GymData gymData) {
+                          setState(() {});
+                        },
+                    )
+                  )
                   .toList(),
             ),
           ),

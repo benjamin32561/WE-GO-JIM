@@ -42,21 +42,23 @@ class _GymAppState extends State<GymApp> {
   void initState() {
     super.initState();
     _loadGymData();
+  }
 
-    // save gymData everrtime it is being changed
-
+  void updateAndSaveGymData(List<GymData> updatedData) {
+    setState(() { gymData = updatedData; });
+    writeJsonToFile();
   }
 
   Future<void> _loadGymData() async {
-    final List<dynamic> jsonData = await readJsonFromFile(JSON_DATA__FILENAM);
+    final List<dynamic> jsonData = await readJsonFromFile();
     gymData = jsonData.map((jsonItem) => GymData.fromJson(jsonItem)).toList();
     setState(() {}); // Update the state once the data is loaded
   }
 
-  Future<List<dynamic>> readJsonFromFile(String fileName) async {
+  Future<List<dynamic>> readJsonFromFile() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/$fileName');
+      final file = File('${directory.path}/$JSON_DATA__FILENAM');
       final jsonString = await file.readAsString();
       return json.decode(jsonString);
     } catch (e) {
@@ -95,10 +97,13 @@ class _GymAppState extends State<GymApp> {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            GymDataWidget(),
-            GenerateWorkoutWidget(),
+            GymDataWidget(
+              gymsData: gymData,
+              onUpdate: updateAndSaveGymData,
+            ),
+            const GenerateWorkoutWidget(),
           ],
         ),
       ),
