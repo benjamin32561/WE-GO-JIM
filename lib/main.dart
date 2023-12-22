@@ -42,6 +42,9 @@ class _GymAppState extends State<GymApp> {
   void initState() {
     super.initState();
     _loadGymData();
+
+    // save gymData everrtime it is being changed
+
   }
 
   Future<void> _loadGymData() async {
@@ -64,7 +67,7 @@ class _GymAppState extends State<GymApp> {
   Future<void> writeJsonToFile() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$JSON_DATA__FILENAM');
-    final jsonString = json.encode(gymData);
+    final jsonString = json.encode(gymData.map((gd) => gd.toJson()).toList());
     await file.writeAsString(jsonString);
   }
 

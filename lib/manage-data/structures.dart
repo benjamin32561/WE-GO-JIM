@@ -14,6 +14,15 @@ class Exercise {
       type: json['type'] as String?,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'weight': weight,
+      'reps': reps,
+      'type': type,
+    };
+  }
 }
 
 class GymData {
@@ -30,5 +39,12 @@ class GymData {
       name: json['name'] as String?,
       exercises: exercises,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'exercises': exercises?.map((e) => e.toJson()).toList(),
+    };
   }
 }
