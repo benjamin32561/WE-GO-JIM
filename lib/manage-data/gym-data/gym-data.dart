@@ -12,25 +12,55 @@ class GymDataWidget extends StatefulWidget {
 }
 
 class _GymDataWidgetState extends State<GymDataWidget> {
-  
+  void _addWorkout(){
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Enter Workout Name'),
+        content: TextField(
+          onSubmitted: (String value) {
+            Navigator.of(context).pop(value);
+          },
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    ).then((value) {
+      if (value != null && value.isNotEmpty) {
+        setState(() {
+          Workout workoutToAdd = Workout(name: value, exercises: []);
+          widget.gymData.workouts.add(workoutToAdd);
+          widget.onUpdate(widget.gymData);
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        // add workout
-        
-        children: widget.gymData.workouts.map((workout) {
-          return WorkoutDataWidget(
-            workoutData: workout,
-            onUpdate: (updatedWorkout) {
-              setState(() {
-                widget.gymData.workouts[widget.gymData.workouts.indexOf(workout)] = updatedWorkout;
-                widget.onUpdate(widget.gymData);
-              });
-            },
-          );
-        }).toList(),
+        children: [
+          ...widget.gymData.workouts.map((workout) {
+            return WorkoutDataWidget(
+              workoutData: workout,
+              onUpdate: (updatedWorkout) {
+                setState(() {
+                  widget.gymData.workouts[widget.gymData.workouts.indexOf(workout)] = updatedWorkout;
+                  widget.onUpdate(widget.gymData);
+                });
+              },
+            );
+          }).toList(),
+          ElevatedButton(
+            onPressed: _addWorkout,
+            child: const Text('Create New Workout'),
+          ),
+        ],
       ),
     );
   }

@@ -45,10 +45,10 @@ class _GymsDataWidgetState extends State<GymsDataWidget> {
       context: context,
       builder: (BuildContext context) {
         return DeleteTabDialog(
-          tabTitles: widget.gymsData.map((gymsData) => gymsData.id).toList(),
-          onDelete: (String value) {
+          gyms: widget.gymsData,
+          onDelete: (Gym gym) {
             setState(() {
-              widget.gymsData.removeWhere((gymsData) => gymsData.id == value);
+              widget.gymsData.remove(gym);
               widget.onUpdate(widget.gymsData);
             });
           },
@@ -116,34 +116,34 @@ class _GymsDataWidgetState extends State<GymsDataWidget> {
 }
 
 class DeleteTabDialog extends StatefulWidget {
-  final List<String> tabTitles;
-  final Function(String) onDelete;
+  final List<Gym> gyms;
+  final Function(Gym) onDelete;
 
-  const DeleteTabDialog({Key? key, required this.tabTitles, required this.onDelete}) : super(key: key);
+  const DeleteTabDialog({Key? key, required this.gyms, required this.onDelete}) : super(key: key);
 
   @override
   _DeleteTabDialogState createState() => _DeleteTabDialogState();
 }
 
 class _DeleteTabDialogState extends State<DeleteTabDialog> {
-  String? selectedTab;
+  Gym? selectedGym;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Select a Gym to Delete'),
-      content: DropdownButton<String>(
-        value: selectedTab,
+      content: DropdownButton<Gym>(
+        value: selectedGym,
         isExpanded: true,
-        onChanged: (String? newValue) {
+        onChanged: (Gym? newValue) {
           setState(() {
-            selectedTab = newValue;
+            selectedGym = newValue;
           });
         },
-        items: widget.tabTitles.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
+        items: widget.gyms.map<DropdownMenuItem<Gym>>((Gym gym) {
+          return DropdownMenuItem<Gym>(
+            value: gym,
+            child: Text(gym.name),
           );
         }).toList(),
       ),
@@ -154,8 +154,8 @@ class _DeleteTabDialogState extends State<DeleteTabDialog> {
         ),
         TextButton(
           onPressed: () {
-            if (selectedTab != null) {
-              widget.onDelete(selectedTab!);
+            if (selectedGym != null) {
+              widget.onDelete(selectedGym!);
               Navigator.of(context).pop();
             }
           },
