@@ -98,7 +98,10 @@ class _GymAppState extends State<GymApp> {
               gymsData: gymsData,
               onUpdate: updateAndSaveGym,
             ),
-            const GenerateWorkoutWidget(),
+            GenerateWorkoutWidget(
+              gymsData: gymsData,
+              onUpdate: updateAndSaveGym,
+            ),
           ],
         ),
       ),

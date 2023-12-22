@@ -64,67 +64,71 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
             ],
           ),
           const SizedBox(height: 10),
-          DataTable(
-            decoration: const BoxDecoration(
-              border: Border(
-                top: BorderSide(width: 1.0, color: Colors.black),
-                bottom: BorderSide(width: 1.0, color: Colors.black),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child:  DataTable(
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(width: 1.0, color: Colors.black),
+                  bottom: BorderSide(width: 1.0, color: Colors.black),
+                ),
               ),
-            ),
-            columns: const <DataColumn>[
-              DataColumn(label: Text('')),
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Weight')),
-              DataColumn(label: Text('Reps')),
-              DataColumn(label: Text('Type')),
-            ],
-            rows: widget.workoutData.exercises.map((exercise) => DataRow(cells: [
-                  DataCell(
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        _removeExercise(exercise);
-                      },
-                    )
-                  ),
+              columns: const <DataColumn>[
+                DataColumn(label: Text('')),
+                DataColumn(label: Text('Name')),
+                DataColumn(label: Text('Weight')),
+                DataColumn(label: Text('Reps')),
+                DataColumn(label: Text('Type')),
+              ],
+              rows: widget.workoutData.exercises.map((exercise) => DataRow(cells: [
+                DataCell(
+                  IconButton(
+                    color: Colors.red,
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      _removeExercise(exercise);
+                    },
+                  )
+                ),
 
-                  DataCell(
-                    TextFormField(
-                      initialValue: exercise.name,
-                      onChanged: (value) => setState(() => exercise.name = value),
-                    )
-                  ),
-                  DataCell(
-                    TextFormField(
-                      initialValue: exercise.weight,
-                      onChanged: (value) => setState(() => exercise.weight = value),
-                    )
-                  ),
-                  DataCell(
-                    TextFormField(
-                      initialValue: exercise.reps,
-                      onChanged: (value) => setState(() => exercise.reps = value),
-                    )
-                  ),
-                  DataCell(
-                    DropdownButtonFormField<String>(
-                      value: exercise.type,
-                      onChanged: (newValue) => setState(() => exercise.type = newValue),
-                      items: <String>['Hypo', 'Strength', 'Endurance']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
-                    )
-                  ),
-                ])).toList(),
+                DataCell(
+                  TextFormField(
+                    initialValue: exercise.name,
+                    onChanged: (value) => setState(() {exercise.name = value; widget.onUpdate(widget.workoutData);}),
+                  )
+                ),
+                DataCell(
+                  TextFormField(
+                    initialValue: exercise.weight,
+                    onChanged: (value) => setState(() {exercise.weight = value; widget.onUpdate(widget.workoutData);}),
+                  )
+                ),
+                DataCell(
+                  TextFormField(
+                    initialValue: exercise.reps,
+                    onChanged: (value) => setState(() {exercise.reps = value; widget.onUpdate(widget.workoutData);}),
+                  )
+                ),
+                DataCell(
+                  DropdownButtonFormField<String>(
+                    value: exercise.type,
+                    onChanged: (newValue) => setState(() {exercise.type = newValue; widget.onUpdate(widget.workoutData);}),
+                    items: <String>['Hypo', 'Strength', 'Endurance']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                  )
+                ),
+              ])).toList(),
+            ),
           ),
           const SizedBox(height: 10),
           Container(

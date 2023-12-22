@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:we_go_jim/manage-data/structures.dart';
 
 // a simple statefull widget named "GenerateWorkoutWidget"
 class GenerateWorkoutWidget extends StatefulWidget {
-  const GenerateWorkoutWidget({Key? key}) : super(key: key);
+  final Function(List<Gym>) onUpdate;
+  List<Gym> gymsData = [];
+  GenerateWorkoutWidget({super.key, required this.gymsData, required this.onUpdate});
 
   @override
   _GenerateWorkoutWidgetState createState() => _GenerateWorkoutWidgetState();
@@ -12,9 +15,46 @@ class GenerateWorkoutWidget extends StatefulWidget {
 class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   @override
   Widget build(BuildContext context) {
-    return Container();
-    //select a gym using dropdown, also select workout type
-    //randomly build workout
-    //be able to edit order and excercises
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //dropdown for selecting gym
+              DropdownButton<Gym>(
+                value: widget.gymsData[0],
+                onChanged: (Gym? newValue) {
+                  setState(() {
+                    widget.gymsData[0] = newValue!;
+                  });
+                },
+                items: widget.gymsData.map((Gym gym) {
+                  return DropdownMenuItem<Gym>(
+                    value: gym,
+                    child: Text(gym.name),
+                  );
+                }).toList(),
+              ),
+              //dropdown for selecting workout type
+              DropdownButton<String>(
+                value: 'Strength',
+                onChanged: (String? newValue) {
+                  setState(() {
+                    newValue = 'Strength';
+                  });
+                },
+                items: <String>['Strength', 'Endurance', 'Cardio'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
