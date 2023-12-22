@@ -2,6 +2,8 @@ import 'package:uuid/uuid.dart';
 
 var uuid = Uuid();
 
+const ExerciseTypes = ['Strength', 'Endurance', 'Cardio'];
+
 class Exercise {
   String id;
   String? name;

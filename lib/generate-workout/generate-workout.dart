@@ -13,14 +13,18 @@ class GenerateWorkoutWidget extends StatefulWidget {
 
 // the state of the widget
 class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
+  List<Exercise> workoutLayout = [];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
+          const SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              const Text('GYM: '),
               //dropdown for selecting gym
               DropdownButton<Gym>(
                 value: widget.gymsData[0],
@@ -37,22 +41,46 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
                 }).toList(),
               ),
               //dropdown for selecting workout type
-              DropdownButton<String>(
-                value: 'Strength',
-                onChanged: (String? newValue) {
+              const Text('Workout Type: '),
+              DropdownButton<Workout>(
+                value: widget.gymsData[0].workouts[0],
+                onChanged: (Workout? newValue) {
                   setState(() {
-                    newValue = 'Strength';
+                    newValue = widget.gymsData[0].workouts[0];
                   });
                 },
-                items: <String>['Strength', 'Endurance', 'Cardio'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                items: widget.gymsData[0].workouts.map((Workout workout) {
+                  return DropdownMenuItem<Workout>(
+                    value: workout,
+                    child: Text(workout.name),
                   );
                 }).toList(),
               ),
             ],
           ),
+          const SizedBox(height: 20),
+          //list of exercises in workout
+          Column(
+            children: workoutLayout.map((Exercise exercise) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(exercise.name!),
+                  Text(exercise.reps!),
+                  Text(exercise.weight!),
+                ],
+              );
+            }).toList(),
+          ),
+          workoutLayout.isEmpty ? 
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Generate Workout Layout'),
+            ) :
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Generate Workout'),
+            ),
         ],
       ),
     );
