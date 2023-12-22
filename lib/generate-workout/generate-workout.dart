@@ -13,5 +13,8 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   @override
   Widget build(BuildContext context) {
     return Container();
+    //select a gym using dropdown, also select workout type
+    //randomly build workout
+    //be able to edit order and excercises
   }
 }

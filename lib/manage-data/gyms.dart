@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/gym-data.dart';
 
-class SimpleSelectionBarWidget extends StatefulWidget {
-  SimpleSelectionBarWidget({super.key});
+class GymDataWidget extends StatefulWidget {
+  const GymDataWidget({super.key});
 
   @override
-  _SimpleSelectionBarWidgetState createState() => _SimpleSelectionBarWidgetState();
+  _GymDataWidgetState createState() => _GymDataWidgetState();
 }
 
-class _SimpleSelectionBarWidgetState extends State<SimpleSelectionBarWidget> {
+class _GymDataWidgetState extends State<GymDataWidget> {
   List<String> tabTitles = ['GYM 1', 'GYM 2', 'GYM 3'];
 
   void _addNewTab() {
@@ -37,29 +37,59 @@ class _SimpleSelectionBarWidgetState extends State<SimpleSelectionBarWidget> {
     });
   }
 
+  void _deleteTab(String title) {
+    setState(() {
+      tabTitles.remove(title);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: tabTitles.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('WE GO JIM'),
-          bottom: TabBar(
-            isScrollable: true, // For scrolling if tabs overflow
-            tabs: tabTitles.map((title) => Tab(text: title)).toList(),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: _addNewTab,
+      child: Column(
+        children: [
+          AppBar(
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TabBar(
+                      isScrollable: true,
+                      tabs: tabTitles.map((title) {
+                        return Tab(
+                          child: Row(
+                            children: [
+                              Text(title),
+                              IconButton(
+                                icon: const Icon(Icons.delete, size: 18),
+                                onPressed: () => _deleteTab(title),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: _addNewTab,
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-        body: TabBarView(
-          children: tabTitles
-              .map((title) => ExerciseContentWidget(tabTitle: title))
-              .toList(),
-        ),
+            title: null,
+          ),
+          Expanded(
+            child: TabBarView(
+              children: tabTitles
+                  .map((title) => ExerciseContentWidget(tabTitle: title))
+                  .toList(),
+            ),
+          ),
+        ],
       ),
     );
   }
