@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/gym-data.dart';
 import 'package:we_go_jim/manage-data/structures.dart';
 
-class GymDataWidget extends StatefulWidget {
-  final Function(List<GymData>) onUpdate;
-  List<GymData> gymsData = [];
-  GymDataWidget({Key? key, required this.gymsData, required this.onUpdate}) : super(key: key);
+class GymsDataWidget extends StatefulWidget {
+  final Function(List<Gym>) onUpdate;
+  List<Gym> gymsData = [];
+  GymsDataWidget({Key? key, required this.gymsData, required this.onUpdate}) : super(key: key);
 
   @override
-  _GymDataWidgetState createState() => _GymDataWidgetState();
+  _GymsDataWidgetState createState() => _GymsDataWidgetState();
 }
 
-class _GymDataWidgetState extends State<GymDataWidget> {
+class _GymsDataWidgetState extends State<GymsDataWidget> {
   void _addNewTab() {
     showDialog<String>(
       context: context,
@@ -32,7 +32,7 @@ class _GymDataWidgetState extends State<GymDataWidget> {
     ).then((value) {
       if (value != null && value.isNotEmpty) {
         setState(() {
-          GymData gymsDataToAdd = GymData(name: value, exercises: []);
+          Gym gymsDataToAdd = Gym(name: value, workouts: []);
           widget.gymsData.add(gymsDataToAdd);
           widget.onUpdate(widget.gymsData);
         });
@@ -57,7 +57,7 @@ class _GymDataWidgetState extends State<GymDataWidget> {
     );
   }
 
-  updateGymData(GymData gymData) {
+  updateGym(Gym gymData) {
     setState(() {
       widget.gymsData[widget.gymsData.indexWhere((element) => element.name == gymData.name)] = gymData;
       widget.onUpdate(widget.gymsData);
@@ -77,7 +77,6 @@ class _GymDataWidgetState extends State<GymDataWidget> {
               IconButton(
                 icon: const Icon(Icons.remove),
                 onPressed: () {
-                  // Implement the logic to add a new tab
                   _deleteTab();
                 },
               ),
@@ -100,9 +99,9 @@ class _GymDataWidgetState extends State<GymDataWidget> {
           Expanded(
             child: TabBarView(
               children: widget.gymsData
-                  .map((gymData) => ExerciseContentWidget(
+                  .map((gymData) => GymDataWidget(
                         gymData: gymData,
-                        onUpdate: (GymData gymData) {
+                        onUpdate: (Gym gymData) {
                           setState(() {});
                         },
                     )

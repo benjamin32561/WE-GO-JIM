@@ -36,22 +36,22 @@ class GymApp extends StatefulWidget {
 }
 
 class _GymAppState extends State<GymApp> {
-  List<GymData> gymData = [];
+  List<Gym> gymData = [];
 
   @override
   void initState() {
     super.initState();
-    _loadGymData();
+    _loadGym();
   }
 
-  void updateAndSaveGymData(List<GymData> updatedData) {
+  void updateAndSaveGym(List<Gym> updatedData) {
     setState(() { gymData = updatedData; });
     writeJsonToFile();
   }
 
-  Future<void> _loadGymData() async {
+  Future<void> _loadGym() async {
     final List<dynamic> jsonData = await readJsonFromFile();
-    gymData = jsonData.map((jsonItem) => GymData.fromJson(jsonItem)).toList();
+    gymData = jsonData.map((jsonItem) => Gym.fromJson(jsonItem)).toList();
     setState(() {}); // Update the state once the data is loaded
   }
 
@@ -99,9 +99,9 @@ class _GymAppState extends State<GymApp> {
         ),
         body: TabBarView(
           children: [
-            GymDataWidget(
+            GymsDataWidget(
               gymsData: gymData,
-              onUpdate: updateAndSaveGymData,
+              onUpdate: updateAndSaveGym,
             ),
             const GenerateWorkoutWidget(),
           ],

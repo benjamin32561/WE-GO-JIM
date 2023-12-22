@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/structures.dart';
 
 // Define the StatefulWidget
-class ExerciseTable extends StatefulWidget {
-  final String tableName;
-
-  const ExerciseTable({super.key, required this.tableName});
+class WorkoutDataWidget extends StatefulWidget {
+  final Function(Workout) onUpdate;
+  Workout workoutData;
+  WorkoutDataWidget({Key? key, required this.workoutData, required this.onUpdate}) : super(key: key);
 
   @override
-  _ExerciseTableState createState() => _ExerciseTableState();
+  _WorkoutDataWidgetState createState() => _WorkoutDataWidgetState();
 }
 
-class _ExerciseTableState extends State<ExerciseTable> {
+class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
   List<Exercise> exercises = [];
 
   void _addNewExercise() {
@@ -37,7 +37,7 @@ class _ExerciseTableState extends State<ExerciseTable> {
       child: Column(
         children: [
           Text(
-            widget.tableName,
+            widget.workoutData.name,
             style: const TextStyle(
                 fontSize: 24, // Change this value to your desired size
                 fontWeight: FontWeight.bold, // Makes the text bold

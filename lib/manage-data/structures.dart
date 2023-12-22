@@ -25,26 +25,50 @@ class Exercise {
   }
 }
 
-class GymData {
-  String? name;
-  List<Exercise>? exercises;
+class Workout {
+  String name;
+  List<Exercise> exercises;
 
-  GymData({this.name, this.exercises});
+  Workout({required this.name, required this.exercises});
 
-  factory GymData.fromJson(Map<String, dynamic> json) {
+  factory Workout.fromJson(Map<String, dynamic> json) {
     var exercisesJson = json['exercises'] as List<dynamic>?;
     var exercises = exercisesJson?.map((e) => Exercise.fromJson(e)).toList();
 
-    return GymData(
-      name: json['name'] as String?,
-      exercises: exercises,
+    return Workout(
+      name: json['name'] as String,
+      exercises: exercises ?? [],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'exercises': exercises?.map((e) => e.toJson()).toList(),
+      'exercises': exercises.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class Gym {
+  String name;
+  List<Workout> workouts;
+
+  Gym({required this.name, required this.workouts});
+
+  factory Gym.fromJson(Map<String, dynamic> json) {
+    var workoutsJson = json['workouts'] as List<dynamic>?;
+    var workouts = workoutsJson?.map((e) => Workout.fromJson(e)).toList();
+
+    return Gym(
+      name: json['name'] as String,
+      workouts: workouts ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'workouts': workouts.map((e) => e.toJson()).toList(),
     };
   }
 }
