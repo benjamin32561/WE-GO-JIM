@@ -19,6 +19,13 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
     });
   }
 
+  void _removeExercise(Exercise toRemove) {
+    setState(() {
+      widget.workoutData.exercises.remove(toRemove);
+      widget.onUpdate(widget.workoutData);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -57,9 +64,7 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
                     IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        setState(() {
-                          widget.workoutData.exercises.remove(exercise);
-                        });
+                        _removeExercise(exercise);
                       },
                     )
                   ),

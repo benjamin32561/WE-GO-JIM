@@ -45,10 +45,10 @@ class _GymsDataWidgetState extends State<GymsDataWidget> {
       context: context,
       builder: (BuildContext context) {
         return DeleteTabDialog(
-          tabTitles: widget.gymsData.map((gymsData) => gymsData.name!).toList(),
+          tabTitles: widget.gymsData.map((gymsData) => gymsData.id).toList(),
           onDelete: (String value) {
             setState(() {
-              widget.gymsData.removeWhere((gymsData) => gymsData.name == value);
+              widget.gymsData.removeWhere((gymsData) => gymsData.id == value);
               widget.onUpdate(widget.gymsData);
             });
           },
