@@ -12,11 +12,10 @@ class WorkoutDataWidget extends StatefulWidget {
 }
 
 class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
-  List<Exercise> exercises = [];
-
   void _addNewExercise() {
     setState(() {
-      exercises.add(Exercise());
+      widget.workoutData.exercises.add(Exercise());
+      widget.onUpdate(widget.workoutData);
     });
   }
 
@@ -53,13 +52,13 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
               DataColumn(label: Text('Reps')),
               DataColumn(label: Text('Type')),
             ],
-            rows: exercises.map((exercise) => DataRow(cells: [
+            rows: widget.workoutData.exercises.map((exercise) => DataRow(cells: [
                   DataCell(
                     IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
                         setState(() {
-                          exercises.remove(exercise);
+                          widget.workoutData.exercises.remove(exercise);
                         });
                       },
                     )
