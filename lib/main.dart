@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_go_jim/generate-workout/generate-workout.dart';
 import 'package:we_go_jim/manage-data/gyms.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:we_go_jim/manage-data/structures.dart';
 
 const String JSON_DATA__FILENAM = 'gyms-data.json';
@@ -46,31 +46,26 @@ class _GymAppState extends State<GymApp> {
 
   void updateAndSaveGym(List<Gym> updatedData) {
     setState(() { gymsData = updatedData; });
-    writeJsonToFile();
+    _saveGym();
   }
 
   Future<void> _loadGym() async {
-    final List<dynamic> jsonData = await readJsonFromFile();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('data');
+    if (jsonString == null) {
+      gymsData = [];
+      return;
+    }
+    final List<dynamic> jsonData = json.decode(jsonString!);
     gymsData = jsonData.map((jsonItem) => Gym.fromJson(jsonItem)).toList();
     setState(() {}); // Update the state once the data is loaded
   }
 
-  Future<List<dynamic>> readJsonFromFile() async {
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/$JSON_DATA__FILENAM');
-      final jsonString = await file.readAsString();
-      return json.decode(jsonString);
-    } catch (e) {
-      return [];
-    }
-  }
-
-  Future<void> writeJsonToFile() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$JSON_DATA__FILENAM');
+  Future<void> _saveGym() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = json.encode(gymsData.map((gd) => gd.toJson()).toList());
-    await file.writeAsString(jsonString);
+    prefs.setString('data', jsonString);
+    setState(() {}); // Update the state once the data is loaded
   }
 
   @override
@@ -84,7 +79,7 @@ class _GymAppState extends State<GymApp> {
             children: [
               const Text('WE GO JIM'),
               ElevatedButton(
-                onPressed: writeJsonToFile,
+                onPressed: _saveGym,
                 child: const Text('Save'),
               ),
             ],

@@ -54,8 +54,14 @@ class _GymDataWidgetState extends State<GymDataWidget> {
                   widget.onUpdate(widget.gymData);
                 });
               },
+              deleteWorkout: (workoutToDelete) {
+                 setState(() {
+                  widget.gymData.workouts.remove(workoutToDelete);
+                  widget.onUpdate(widget.gymData);
+                });
+              },
             );
-          }).toList(),
+          }),
           ElevatedButton(
             onPressed: _addWorkout,
             child: const Text('Create New Workout'),

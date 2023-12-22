@@ -4,8 +4,9 @@ import 'package:we_go_jim/manage-data/structures.dart';
 // Define the StatefulWidget
 class WorkoutDataWidget extends StatefulWidget {
   final Function(Workout) onUpdate;
+  final Function(Workout) deleteWorkout;
   Workout workoutData;
-  WorkoutDataWidget({Key? key, required this.workoutData, required this.onUpdate}) : super(key: key);
+  WorkoutDataWidget({Key? key, required this.workoutData, required this.onUpdate, required this.deleteWorkout}) : super(key: key);
 
   @override
   _WorkoutDataWidgetState createState() => _WorkoutDataWidgetState();
@@ -42,16 +43,34 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
       margin: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
-          Text(
-            widget.workoutData.name,
-            style: const TextStyle(
-                fontSize: 24, // Change this value to your desired size
-                fontWeight: FontWeight.bold, // Makes the text bold
-                // You can add more styling properties here if needed
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //Icon button for deleting current workout
+              IconButton(
+                color: Colors.red,
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  widget.deleteWorkout(widget.workoutData);
+                },
+              ),
+              Text(
+                widget.workoutData.name,
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold, 
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           DataTable(
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(width: 1.0, color: Colors.black),
+                bottom: BorderSide(width: 1.0, color: Colors.black),
+              ),
+            ),
             columns: const <DataColumn>[
               DataColumn(label: Text('')),
               DataColumn(label: Text('Name')),
