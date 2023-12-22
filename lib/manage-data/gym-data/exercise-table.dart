@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_go_jim/manage-data/structures.dart';
 
 // Define the StatefulWidget
 class ExerciseTable extends StatefulWidget {
@@ -46,40 +47,60 @@ class _ExerciseTableState extends State<ExerciseTable> {
           const SizedBox(height: 10),
           DataTable(
             columns: const <DataColumn>[
+              DataColumn(label: Text('')),
               DataColumn(label: Text('Name')),
               DataColumn(label: Text('Weight')),
               DataColumn(label: Text('Reps')),
               DataColumn(label: Text('Type')),
             ],
             rows: exercises.map((exercise) => DataRow(cells: [
-                  DataCell(TextFormField(
-                    initialValue: exercise.name,
-                    onChanged: (value) => setState(() => exercise.name = value),
-                  )),
-                  DataCell(TextFormField(
-                    initialValue: exercise.weight,
-                    onChanged: (value) => setState(() => exercise.weight = value),
-                  )),
-                  DataCell(TextFormField(
-                    initialValue: exercise.reps,
-                    onChanged: (value) => setState(() => exercise.reps = value),
-                  )),
-                  DataCell(DropdownButtonFormField<String>(
-                    value: exercise.type,
-                    onChanged: (newValue) => setState(() => exercise.type = newValue),
-                    items: <String>['Hypo', 'Strength', 'Endurance']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  )),
+                  DataCell(
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        setState(() {
+                          exercises.remove(exercise);
+                        });
+                      },
+                    )
+                  ),
+
+                  DataCell(
+                    TextFormField(
+                      initialValue: exercise.name,
+                      onChanged: (value) => setState(() => exercise.name = value),
+                    )
+                  ),
+                  DataCell(
+                    TextFormField(
+                      initialValue: exercise.weight,
+                      onChanged: (value) => setState(() => exercise.weight = value),
+                    )
+                  ),
+                  DataCell(
+                    TextFormField(
+                      initialValue: exercise.reps,
+                      onChanged: (value) => setState(() => exercise.reps = value),
+                    )
+                  ),
+                  DataCell(
+                    DropdownButtonFormField<String>(
+                      value: exercise.type,
+                      onChanged: (newValue) => setState(() => exercise.type = newValue),
+                      items: <String>['Hypo', 'Strength', 'Endurance']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    )
+                  ),
                 ])).toList(),
           ),
           const SizedBox(height: 10),
@@ -99,13 +120,4 @@ class _ExerciseTableState extends State<ExerciseTable> {
       )
     );
   }
-}
-
-class Exercise {
-  String? name;
-  String? weight;
-  String? reps;
-  String? type;
-
-  Exercise({this.name = '', this.weight = '', this.reps = '', this.type});
 }

@@ -37,10 +37,20 @@ class _GymDataWidgetState extends State<GymDataWidget> {
     });
   }
 
-  void _deleteTab(String title) {
-    setState(() {
-      tabTitles.remove(title);
-    });
+  void _deleteTab() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteTabDialog(
+          tabTitles: tabTitles,
+          onDelete: (String value) {
+            setState(() {
+              tabTitles.remove(value);
+            });
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -49,38 +59,32 @@ class _GymDataWidgetState extends State<GymDataWidget> {
       length: tabTitles.length,
       child: Column(
         children: [
-          AppBar(
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TabBar(
-                      isScrollable: true,
-                      tabs: tabTitles.map((title) {
-                        return Tab(
-                          child: Row(
-                            children: [
-                              Text(title),
-                              IconButton(
-                                icon: const Icon(Icons.delete, size: 18),
-                                onPressed: () => _deleteTab(title),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: _addNewTab,
-                  ),
-                ],
+          // TabBar which allows selecting between different tabTitles
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: () {
+                  // Implement the logic to add a new tab
+                  _deleteTab();
+                },
               ),
-            ),
-            title: null,
+              Expanded(
+                child: TabBar(
+                  isScrollable: true,
+                  tabs: tabTitles.map((title) => Tab(
+                    text: title,
+                  )).toList(),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  _addNewTab();
+                },
+              ),
+            ],
           ),
           Expanded(
             child: TabBarView(
@@ -91,6 +95,57 @@ class _GymDataWidgetState extends State<GymDataWidget> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class DeleteTabDialog extends StatefulWidget {
+  final List<String> tabTitles;
+  final Function(String) onDelete;
+
+  const DeleteTabDialog({Key? key, required this.tabTitles, required this.onDelete}) : super(key: key);
+
+  @override
+  _DeleteTabDialogState createState() => _DeleteTabDialogState();
+}
+
+class _DeleteTabDialogState extends State<DeleteTabDialog> {
+  String? selectedTab;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Select a Gym to Delete'),
+      content: DropdownButton<String>(
+        value: selectedTab,
+        isExpanded: true,
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedTab = newValue;
+          });
+        },
+        items: widget.tabTitles.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (selectedTab != null) {
+              widget.onDelete(selectedTab!);
+              Navigator.of(context).pop();
+            }
+          },
+          child: const Text('Delete'),
+        ),
+      ],
     );
   }
 }
