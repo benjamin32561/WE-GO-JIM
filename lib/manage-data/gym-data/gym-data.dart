@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/workout-data/workout-data.dart';
-import 'package:we_go_jim/manage-data/structures.dart';
+import 'package:we_go_jim/structures.dart';
 
 class GymDataWidget extends StatefulWidget {
   final Function(Gym) onUpdate;
@@ -66,6 +66,7 @@ class _GymDataWidgetState extends State<GymDataWidget> {
             onPressed: _addWorkout,
             child: const Text('Create New Workout'),
           ),
+          const SizedBox(height: 20)
         ],
       ),
     );

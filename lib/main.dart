@@ -3,8 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_go_jim/generate-workout/generate-workout.dart';
 import 'package:we_go_jim/manage-data/gyms.dart';
 import 'dart:convert';
-import 'dart:io';
-import 'package:we_go_jim/manage-data/structures.dart';
+import 'package:we_go_jim/structures.dart';
 
 const String JSON_DATA__FILENAM = 'gyms-data.json';
 

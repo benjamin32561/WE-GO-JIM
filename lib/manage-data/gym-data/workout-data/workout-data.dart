@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:we_go_jim/manage-data/structures.dart';
+import 'package:we_go_jim/structures.dart';
 
 // Define the StatefulWidget
 class WorkoutDataWidget extends StatefulWidget {

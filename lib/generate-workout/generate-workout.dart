@@ -1,7 +1,7 @@
 import 'dart:math';
-
+import 'package:vibration/vibration.dart';
 import 'package:flutter/material.dart';
-import 'package:we_go_jim/manage-data/structures.dart';
+import 'package:we_go_jim/structures.dart';
 
 // a simple statefull widget named "GenerateWorkoutWidget"
 class GenerateWorkoutWidget extends StatefulWidget {
@@ -24,22 +24,26 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   void _generateWorkout() {
     // count number of strength exercises in seleted workout
     final nStrengthExercisesInWorkout = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').length;
-    final nStrength = random.nextInt(min(nStrengthExercisesInWorkout,3)) + 1;
+    int nStrength = 0;
+    if (nStrengthExercisesInWorkout>0){
+      nStrength = random.nextInt(min(nStrengthExercisesInWorkout,3)) + 1;
+    }
+    
     // count number of hypo exercises in seleted workout
     final nHypoExercises = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Hypo').length;
     int nHypo = 0;
     if (nHypoExercises>0){
       if (nStrength == 0) {
-        nHypo = random.nextInt(min(nHypoExercises,3)) + 4; // Range 4-6
+        nHypo = min(random.nextInt(min(nHypoExercises,3)) + 4, nHypoExercises); // Range 4-6
       }
       else if (nStrength == 1) {
-        nHypo = random.nextInt(min(nHypoExercises,3)) + 3; // Range 3-5
+        nHypo = min(random.nextInt(min(nHypoExercises,3)) + 3, nHypoExercises); // Range 3-5
       }
       else if (nStrength == 2) {
-        nHypo = random.nextInt(min(nHypoExercises,2)) + 2; // Range 2-3
+        nHypo = min(random.nextInt(min(nHypoExercises,2)) + 2,nHypoExercises); // Range 2-3
       } 
       else {
-        nHypo = random.nextInt(min(nHypoExercises,2)) + 1; // Range 1-2
+        nHypo = min(random.nextInt(min(nHypoExercises,2)) + 1, nHypoExercises); // Range 1-2
       }
     }
 
@@ -147,11 +151,15 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
 
   List<ListTile> _buildExerciseListTiles() {
     return workoutLayout.asMap().entries.map((entry) {
-      int index = entry.key;
       String exerciseId = entry.value;
       final exercise = selectedWorkout!.exercises.firstWhere((e) => e.id == exerciseId);
 
       return ListTile(
+        // onLongPress: () async {
+        //   if (await Vibration.hasVibrator() ?? false) {
+        //     Vibration.vibrate();
+        //   }
+        // },
         key: ValueKey(exerciseId),
         title: Row(
           children: [
@@ -211,6 +219,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
                 onChanged: (Gym? newValue) {
                   setState(() {
                     selectedGym = newValue;
+                    workoutLayout = [];
                   });
                 },
                 items: widget.gymsData.map((Gym gym) {
@@ -227,6 +236,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
                 onChanged: (Workout? newValue) {
                   setState(() {
                     selectedWorkout = newValue!;
+                    workoutLayout = [];
                   });
                 },
                 items: widget.gymsData[0].workouts.map((Workout workout) {
@@ -243,7 +253,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
           const SizedBox(height: 10),
           ReorderableListView(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             onReorder: (int oldIndex, int newIndex) {
               setState(() {
                 if (newIndex > oldIndex) {

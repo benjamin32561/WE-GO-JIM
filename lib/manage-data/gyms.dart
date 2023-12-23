@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/gym-data.dart';
-import 'package:we_go_jim/manage-data/structures.dart';
+import 'package:we_go_jim/structures.dart';
 
 class GymsDataWidget extends StatefulWidget {
   final Function(List<Gym>) onUpdate;
