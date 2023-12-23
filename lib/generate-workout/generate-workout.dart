@@ -1,15 +1,16 @@
 import 'dart:math';
-import 'package:vibration/vibration.dart';
 import 'package:flutter/material.dart';
 import 'package:we_go_jim/structures.dart';
 
 // a simple statefull widget named "GenerateWorkoutWidget"
+// ignore: must_be_immutable
 class GenerateWorkoutWidget extends StatefulWidget {
   final Function(List<Gym>) onUpdate;
   List<Gym> gymsData = [];
   GenerateWorkoutWidget({super.key, required this.gymsData, required this.onUpdate});
 
   @override
+  // ignore: library_private_types_in_public_api
   _GenerateWorkoutWidgetState createState() => _GenerateWorkoutWidgetState();
 }
 

@@ -5,8 +5,6 @@ import 'package:we_go_jim/manage-data/gyms.dart';
 import 'dart:convert';
 import 'package:we_go_jim/structures.dart';
 
-const String JSON_DATA__FILENAM = 'gyms-data.json';
-
 void main() {
   runApp(const MyApp());
 }
@@ -31,6 +29,7 @@ class GymApp extends StatefulWidget {
   const GymApp({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _GymAppState createState() => _GymAppState();
 }
 
@@ -55,7 +54,7 @@ class _GymAppState extends State<GymApp> {
       gymsData = [];
       return;
     }
-    final List<dynamic> jsonData = json.decode(jsonString!);
+    final List<dynamic> jsonData = json.decode(jsonString);
     gymsData = jsonData.map((jsonItem) => Gym.fromJson(jsonItem)).toList();
     setState(() {}); // Update the state once the data is loaded
   }

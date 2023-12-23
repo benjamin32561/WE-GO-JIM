@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/workout-data/workout-data.dart';
 import 'package:we_go_jim/structures.dart';
 
+// ignore: must_be_immutable
 class GymDataWidget extends StatefulWidget {
   final Function(Gym) onUpdate;
   Gym gymData;
-  GymDataWidget({Key? key, required this.gymData, required this.onUpdate}) : super(key: key);
+  GymDataWidget({super.key, required this.gymData, required this.onUpdate});
 
   @override
+  // ignore: library_private_types_in_public_api
   _GymDataWidgetState createState() => _GymDataWidgetState();
 }
 

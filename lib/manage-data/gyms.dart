@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:we_go_jim/manage-data/gym-data/gym-data.dart';
 import 'package:we_go_jim/structures.dart';
 
+// ignore: must_be_immutable
 class GymsDataWidget extends StatefulWidget {
   final Function(List<Gym>) onUpdate;
   List<Gym> gymsData = [];
-  GymsDataWidget({Key? key, required this.gymsData, required this.onUpdate}) : super(key: key);
+  GymsDataWidget({super.key, required this.gymsData, required this.onUpdate});
 
   @override
+  // ignore: library_private_types_in_public_api
   _GymsDataWidgetState createState() => _GymsDataWidgetState();
 }
 
@@ -119,9 +121,10 @@ class DeleteTabDialog extends StatefulWidget {
   final List<Gym> gyms;
   final Function(Gym) onDelete;
 
-  const DeleteTabDialog({Key? key, required this.gyms, required this.onDelete}) : super(key: key);
+  const DeleteTabDialog({super.key, required this.gyms, required this.onDelete});
 
   @override
+  // ignore: library_private_types_in_public_api
   _DeleteTabDialogState createState() => _DeleteTabDialogState();
 }
 

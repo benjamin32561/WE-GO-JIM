@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:we_go_jim/structures.dart';
 
 // Define the StatefulWidget
+// ignore: must_be_immutable
 class WorkoutDataWidget extends StatefulWidget {
   final Function(Workout) onUpdate;
   final Function(Workout) deleteWorkout;
   Workout workoutData;
-  WorkoutDataWidget({Key? key, required this.workoutData, required this.onUpdate, required this.deleteWorkout}) : super(key: key);
+  WorkoutDataWidget({super.key, required this.workoutData, required this.onUpdate, required this.deleteWorkout});
 
   @override
+  // ignore: library_private_types_in_public_api
   _WorkoutDataWidgetState createState() => _WorkoutDataWidgetState();
 }
 
