@@ -22,6 +22,17 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   Gym? selectedGym;
   Workout? selectedWorkout;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.gymsData.isNotEmpty) {
+      selectedGym = widget.gymsData[0];
+      if (selectedGym!.workouts.isNotEmpty){
+        selectedWorkout = selectedGym!.workouts[0];
+      }
+    }
+  }
+
   void _generateWorkout() {
     // count number of strength exercises in seleted workout
     final nStrengthExercisesInWorkout = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').length;
@@ -156,11 +167,6 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
       final exercise = selectedWorkout!.exercises.firstWhere((e) => e.id == exerciseId);
 
       return ListTile(
-        // onLongPress: () async {
-        //   if (await Vibration.hasVibrator() ?? false) {
-        //     Vibration.vibrate();
-        //   }
-        // },
         key: ValueKey(exerciseId),
         title: Row(
           children: [
@@ -220,6 +226,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
                 onChanged: (Gym? newValue) {
                   setState(() {
                     selectedGym = newValue;
+                    selectedWorkout = selectedGym!.workouts[0];
                     workoutLayout = [];
                   });
                 },
@@ -240,7 +247,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
                     workoutLayout = [];
                   });
                 },
-                items: widget.gymsData[0].workouts.map((Workout workout) {
+                items: selectedGym!.workouts.map((Workout workout) {
                   return DropdownMenuItem<Workout>(
                     value: workout,
                     child: Text(workout.name),
