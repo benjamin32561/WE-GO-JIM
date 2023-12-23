@@ -17,31 +17,42 @@ class GenerateWorkoutWidget extends StatefulWidget {
 class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   final random = Random();
 
-  List<Exercise> workoutLayout = [];
+  List<String> workoutLayout = [];
   Gym? selectedGym;
   Workout? selectedWorkout;
 
   void _generateWorkout() {
     // count number of strength exercises in seleted workout
     final nStrengthExercisesInWorkout = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').length;
-    final nStrength = random.nextInt(max(nStrengthExercisesInWorkout,3)) + 1;
+    final nStrength = random.nextInt(min(nStrengthExercisesInWorkout,3)) + 1;
     // count number of hypo exercises in seleted workout
     final nHypoExercises = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Hypo').length;
     int nHypo = 0;
-    if (nStrength == 0) {
-      nHypo = random.nextInt(max(nHypoExercises,3)) + 4; // Range 4-6
-    } else if (nStrength == 1) {
-      nHypo = random.nextInt(max(nHypoExercises,3)) + 3; // Range 3-5
-    } else if (nStrength == 2) {
-      nHypo = random.nextInt(max(nHypoExercises,2)) + 2; // Range 2-3
-    } else {
-      nHypo = random.nextInt(max(nHypoExercises,2)) + 1; // Range 1-2
+    if (nHypoExercises>0){
+      if (nStrength == 0) {
+        nHypo = random.nextInt(min(nHypoExercises,3)) + 4; // Range 4-6
+      }
+      else if (nStrength == 1) {
+        nHypo = random.nextInt(min(nHypoExercises,3)) + 3; // Range 3-5
+      }
+      else if (nStrength == 2) {
+        nHypo = random.nextInt(min(nHypoExercises,2)) + 2; // Range 2-3
+      } 
+      else {
+        nHypo = random.nextInt(min(nHypoExercises,2)) + 1; // Range 1-2
+      }
     }
 
     List<Exercise> strengthExercises = selectRandomElements(selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').toList(), nStrength);
     List<Exercise> hypoExercises = selectRandomElements(selectedWorkout!.exercises.where((exercise) => exercise.type == 'Hypo').toList(), nHypo);
 
-    workoutLayout = [...strengthExercises, ...hypoExercises];
+    // add exercises ids to workout layout
+    for (var exercise in strengthExercises) {
+      workoutLayout.add(exercise.id);
+    }
+    for (var exercise in hypoExercises) {
+      workoutLayout.add(exercise.id);
+    }
 
     setState(() {});
   }
@@ -60,6 +71,128 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
     }
 
     return list.sublist(0, n);
+  }
+
+  void _removeExerciseFromLayout(String exerciseId) {
+    setState(() {
+      workoutLayout.remove(exerciseId);
+    });
+  }
+
+  void _addExerciseToLayout(String exerciseId) {
+    setState(() {
+      workoutLayout.add(exerciseId);
+    });
+  }
+
+  void _addExerciseToWorkout(){
+    // create exersice list to choose from
+    List<Exercise> exerciseList = [];
+    for (var exercise in selectedWorkout!.exercises) {
+      if (!workoutLayout.contains(exercise.id)) {
+        exerciseList.add(exercise);
+      }
+    }
+    // open diaglog to select exercise
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Exercise'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                // list of exercises in workout
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child:  DataTable(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(width: 1.0, color: Colors.black),
+                        bottom: BorderSide(width: 1.0, color: Colors.black),
+                      ),
+                    ),
+                    columns: const <DataColumn>[
+                      DataColumn(label: Text('')),
+                      DataColumn(label: Text('Name')),
+                      DataColumn(label: Text('Weight')),
+                      DataColumn(label: Text('Reps')),
+                      DataColumn(label: Text('Type')),
+                    ],
+                    rows: exerciseList.map((exercise) => DataRow(cells: [
+                      DataCell(
+                        IconButton(
+                          color: Colors.green,
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            _addExerciseToLayout(exercise.id);
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ),
+                      DataCell(Text(exercise.name!)),
+                      DataCell(Text(exercise.weight!)),
+                      DataCell(Text(exercise.reps!)),
+                      DataCell(Text(exercise.type!)),
+                    ])).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<ListTile> _buildExerciseListTiles() {
+    return workoutLayout.asMap().entries.map((entry) {
+      int index = entry.key;
+      String exerciseId = entry.value;
+      final exercise = selectedWorkout!.exercises.firstWhere((e) => e.id == exerciseId);
+
+      return ListTile(
+        key: ValueKey(exerciseId),
+        title: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => _removeExerciseFromLayout(exerciseId),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(exercise.name!),
+            ),
+            Expanded(
+              child: TextFormField(
+                initialValue: exercise.weight,
+                onChanged: (value) {
+                  setState(() {
+                    exercise.weight = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextFormField(
+                initialValue: exercise.reps,
+                onChanged: (value) {
+                  setState(() {
+                    exercise.reps = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: Text(exercise.type!),
+            ),
+          ],
+        ),
+      );
+    }).toList();
   }
 
   @override
@@ -107,11 +240,35 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
           ),
           const SizedBox(height: 20),
           //list of exercises in workout
-          
-          ElevatedButton(
-            onPressed: () => _generateWorkout(),
-            child: const Text('Generate Workout'),
+          const SizedBox(height: 10),
+          ReorderableListView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            onReorder: (int oldIndex, int newIndex) {
+              setState(() {
+                if (newIndex > oldIndex) {
+                  newIndex -= 1;
+                }
+                final item = workoutLayout.removeAt(oldIndex);
+                workoutLayout.insert(newIndex, item);
+              });
+            },
+            children: _buildExerciseListTiles(),
           ),
+          const SizedBox(height: 10),
+          workoutLayout.isEmpty ?
+            ElevatedButton(
+              onPressed: () {
+                _generateWorkout();
+              },
+              child: const Text('Generate Workout'),
+            ):
+            ElevatedButton(
+              onPressed: () {
+                _addExerciseToWorkout();
+              },
+              child: const Text('Add Exercises'),
+            ),
         ],
       ),
     );
