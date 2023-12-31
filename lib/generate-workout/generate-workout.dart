@@ -38,7 +38,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
     final nStrengthExercisesInWorkout = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').length;
     int nStrength = 0;
     if (nStrengthExercisesInWorkout>0){
-      nStrength = random.nextInt(min(nStrengthExercisesInWorkout,3));
+      nStrength = random.nextInt(min(nStrengthExercisesInWorkout,4));
     }
     
     // count number of hypo exercises in seleted workout
@@ -213,6 +213,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: Column(
         children: [
           const SizedBox(height: 20),
@@ -257,8 +258,6 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
             ],
           ),
           const SizedBox(height: 20),
-          //list of exercises in workout
-          const SizedBox(height: 10),
           ReorderableListView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

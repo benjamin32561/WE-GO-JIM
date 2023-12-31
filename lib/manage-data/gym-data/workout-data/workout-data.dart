@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_go_jim/structures.dart';
 
-// Define the StatefulWidget
 // ignore: must_be_immutable
 class WorkoutDataWidget extends StatefulWidget {
   final Function(Workout) onUpdate;
@@ -22,27 +21,91 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
     });
   }
 
-  void _removeExercise(String toRemoveid) {
+  void _removeExercise(String toRemoveId) {
     setState(() {
-      widget.workoutData.exercises.removeWhere((exercise) => exercise.id == toRemoveid);
+      widget.workoutData.exercises.removeWhere((exercise) => exercise.id == toRemoveId);
       widget.onUpdate(widget.workoutData);
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+  List<ListTile> _buildExerciseTiles() {
+    return widget.workoutData.exercises.map((exercise) {
+      return ListTile(
+        key: ValueKey(exercise.id),
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _removeExercise(exercise.id),
+              ),
+              const SizedBox(width: 10,),
+              Container(
+                width: 100, // Adjust the width as needed
+                child: TextFormField(
+                  initialValue: exercise.name,
+                  onChanged: (value) => setState(() {
+                    exercise.name = value;
+                    widget.onUpdate(widget.workoutData);
+                  }),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              Container(
+                width: 80, // Adjust the width as needed
+                child: TextFormField(
+                  initialValue: exercise.weight,
+                  onChanged: (value) => setState(() {
+                    exercise.weight = value;
+                    widget.onUpdate(widget.workoutData);
+                  }),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              Container(
+                width: 80, // Adjust the width as needed
+                child: TextFormField(
+                  initialValue: exercise.reps,
+                  onChanged: (value) => setState(() {
+                    exercise.reps = value;
+                    widget.onUpdate(widget.workoutData);
+                  }),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              Container(
+                width: 120, // Adjust the width as needed
+                child: DropdownButtonFormField<String>(
+                  value: exercise.type,
+                  onChanged: (newValue) => setState(() {
+                    exercise.type = newValue;
+                    widget.onUpdate(widget.workoutData);
+                  }),
+                  items: ExerciseTypes.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: Column(
         children: [
           Row(
@@ -66,86 +129,27 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
             ],
           ),
           const SizedBox(height: 10),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child:  DataTable(
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(width: 1.0, color: Colors.black),
-                  bottom: BorderSide(width: 1.0, color: Colors.black),
-                ),
-              ),
-              columns: const <DataColumn>[
-                DataColumn(label: Text('')),
-                DataColumn(label: Text('Name')),
-                DataColumn(label: Text('Weight')),
-                DataColumn(label: Text('Reps')),
-                DataColumn(label: Text('Type')),
-              ],
-              rows: widget.workoutData.exercises.map((exercise) => DataRow(cells: [
-                DataCell(
-                  IconButton(
-                    color: Colors.red,
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      _removeExercise(exercise.id);
-                    },
-                  )
-                ),
-
-                DataCell(
-                  TextFormField(
-                    initialValue: exercise.name,
-                    onChanged: (value) => setState(() {exercise.name = value; widget.onUpdate(widget.workoutData);}),
-                  )
-                ),
-                DataCell(
-                  TextFormField(
-                    initialValue: exercise.weight,
-                    onChanged: (value) => setState(() {exercise.weight = value; widget.onUpdate(widget.workoutData);}),
-                  )
-                ),
-                DataCell(
-                  TextFormField(
-                    initialValue: exercise.reps,
-                    onChanged: (value) => setState(() {exercise.reps = value; widget.onUpdate(widget.workoutData);}),
-                  )
-                ),
-                DataCell(
-                  DropdownButtonFormField<String>(
-                    value: exercise.type,
-                    onChanged: (newValue) => setState(() {exercise.type = newValue; widget.onUpdate(widget.workoutData);}),
-                    items: ExerciseTypes.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  )
-                ),
-              ])).toList(),
-            ),
+          ReorderableListView(
+            shrinkWrap: true,
+            // scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            onReorder: (int oldIndex, int newIndex) {
+              setState(() {
+                if (newIndex > oldIndex) {
+                  newIndex -= 1;
+                }
+                final item = widget.workoutData.exercises.removeAt(oldIndex);
+                widget.workoutData.exercises.insert(newIndex, item);
+              });
+            },
+            children: _buildExerciseTiles(),
           ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _addNewExercise,
-                  child: const Text('Add Exercise'),
-                ),
-              ],
-            ),
+          ElevatedButton(
+            onPressed: _addNewExercise,
+            child: const Text('Add Exercise'),
           ),
         ],
-      )
+      ),
     );
   }
 }
