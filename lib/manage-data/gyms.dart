@@ -103,9 +103,7 @@ class _GymsDataWidgetState extends State<GymsDataWidget> {
               children: widget.gymsData
                   .map((gymData) => GymDataWidget(
                         gymData: gymData,
-                        onUpdate: (Gym gymData) {
-                          setState(() {});
-                        },
+                        onUpdate: updateGym,
                     )
                   )
                   .toList(),

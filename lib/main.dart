@@ -42,6 +42,12 @@ class _GymAppState extends State<GymApp> {
     _loadGym();
   }
 
+  @override
+  void dispose() {
+    _saveGym();
+    super.dispose();
+  }
+
   void updateAndSaveGym(List<Gym> updatedData) {
     setState(() { gymsData = updatedData; });
     _saveGym();
