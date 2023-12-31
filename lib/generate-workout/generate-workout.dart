@@ -38,7 +38,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
     final nStrengthExercisesInWorkout = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').length;
     int nStrength = 0;
     if (nStrengthExercisesInWorkout>0){
-      nStrength = random.nextInt(min(nStrengthExercisesInWorkout,3)) + 1;
+      nStrength = random.nextInt(min(nStrengthExercisesInWorkout,3));
     }
     
     // count number of hypo exercises in seleted workout
