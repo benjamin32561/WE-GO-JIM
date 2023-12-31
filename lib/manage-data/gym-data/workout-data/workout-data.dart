@@ -22,9 +22,9 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
     });
   }
 
-  void _removeExercise(Exercise toRemove) {
+  void _removeExercise(String toRemoveid) {
     setState(() {
-      widget.workoutData.exercises.remove(toRemove);
+      widget.workoutData.exercises.removeWhere((exercise) => exercise.id == toRemoveid);
       widget.onUpdate(widget.workoutData);
     });
   }
@@ -88,7 +88,7 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
                     color: Colors.red,
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      _removeExercise(exercise);
+                      _removeExercise(exercise.id);
                     },
                   )
                 ),
@@ -115,8 +115,7 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
                   DropdownButtonFormField<String>(
                     value: exercise.type,
                     onChanged: (newValue) => setState(() {exercise.type = newValue; widget.onUpdate(widget.workoutData);}),
-                    items: <String>['Hypo', 'Strength', 'Endurance']
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: ExerciseTypes.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),

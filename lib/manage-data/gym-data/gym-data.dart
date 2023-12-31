@@ -58,7 +58,7 @@ class _GymDataWidgetState extends State<GymDataWidget> {
               },
               deleteWorkout: (workoutToDelete) {
                  setState(() {
-                  widget.gymData.workouts.remove(workoutToDelete);
+                  widget.gymData.workouts.removeWhere((workout) => workout.id == workoutToDelete.id);
                   widget.onUpdate(widget.gymData);
                 });
               },

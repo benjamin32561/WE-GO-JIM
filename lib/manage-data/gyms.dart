@@ -50,7 +50,7 @@ class _GymsDataWidgetState extends State<GymsDataWidget> {
           gyms: widget.gymsData,
           onDelete: (Gym gym) {
             setState(() {
-              widget.gymsData.remove(gym);
+              widget.gymsData.removeWhere((element) => element.id == gym.id);
               widget.onUpdate(widget.gymsData);
             });
           },
