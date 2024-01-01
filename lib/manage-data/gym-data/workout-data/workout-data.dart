@@ -95,6 +95,12 @@ class _WorkoutDataWidgetState extends State<WorkoutDataWidget> {
                   ),
                 ),
               ),
+              const SizedBox(width: 10,),
+              // icon of menu
+              IconButton(
+                icon: const Icon(Icons.menu), 
+                onPressed: () {},
+              )
             ],
           ),
         ),

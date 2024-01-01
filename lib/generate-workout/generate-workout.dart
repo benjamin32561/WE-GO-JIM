@@ -36,10 +36,8 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
   void _generateWorkout() {
     // count number of strength exercises in seleted workout
     final nStrengthExercisesInWorkout = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Strength').length;
-    int nStrength = 0;
-    if (nStrengthExercisesInWorkout>0){
-      nStrength = random.nextInt(min(nStrengthExercisesInWorkout,4));
-    }
+    int nStrength = random.nextInt(min(nStrengthExercisesInWorkout+1,4)); // 0<=x<=min(nStrengthExercisesInWorkout,3)
+    print(nStrength);
     
     // count number of hypo exercises in seleted workout
     final nHypoExercises = selectedWorkout!.exercises.where((exercise) => exercise.type == 'Hypo').length;
@@ -63,6 +61,7 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
     List<Exercise> hypoExercises = selectRandomElements(selectedWorkout!.exercises.where((exercise) => exercise.type == 'Hypo').toList(), nHypo);
 
     // add exercises ids to workout layout
+    workoutLayout = [];
     for (var exercise in strengthExercises) {
       workoutLayout.add(exercise.id);
     }
@@ -204,6 +203,10 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
               flex: 2,
               child: Text(exercise.type!),
             ),
+            IconButton(
+              icon: const Icon(Icons.menu), 
+              onPressed: () {},
+            )
           ],
         ),
       );
@@ -280,12 +283,22 @@ class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
               },
               child: const Text('Generate Workout'),
             ):
-            ElevatedButton(
-              onPressed: () {
-                _addExerciseToWorkout();
-              },
-              child: const Text('Add Exercises'),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    _addExerciseToWorkout();
+                  },
+                  child: const Text('Add Exercises'),
+                ),
+                const SizedBox(width: 10,),
+                IconButton(
+                  icon: const Icon(Icons.refresh), 
+                  onPressed: _generateWorkout,
+                )
+              ],
+            )
         ],
       ),
     );
