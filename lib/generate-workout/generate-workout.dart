@@ -15,7 +15,10 @@ class GenerateWorkoutWidget extends StatefulWidget {
 }
 
 // the state of the widget
-class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget>{
+class _GenerateWorkoutWidgetState extends State<GenerateWorkoutWidget> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
+
   final random = Random();
 
   List<String> workoutLayout = [];

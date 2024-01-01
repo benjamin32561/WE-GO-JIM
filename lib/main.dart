@@ -58,6 +58,7 @@ class _GymAppState extends State<GymApp> {
     final jsonString = prefs.getString('data');
     if (jsonString == null) {
       gymsData = [];
+      setState(() {}); 
       return;
     }
     final List<dynamic> jsonData = json.decode(jsonString);
@@ -69,7 +70,6 @@ class _GymAppState extends State<GymApp> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = json.encode(gymsData.map((gd) => gd.toJson()).toList());
     prefs.setString('data', jsonString);
-    setState(() {}); // Update the state once the data is loaded
   }
 
   @override
